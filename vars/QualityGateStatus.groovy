@@ -1,3 +1,3 @@
 def call(){
-    waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube-api'
+    waitForQualityGate(abortPipeline: false)
 }

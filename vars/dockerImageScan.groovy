@@ -1,4 +1,16 @@
-def call(String project, String Imagetag, String hubUser) {
-    bat "trivy image scan ${hubUser}/${project}:latest" > scanResults.txt
-    type "scanResults.txt"
+def call(String project, String imageTag, String hubUser) {
+
+    bat """
+        trivy image --severity HIGH,CRITICAL --format table -o scanResults.txt ${hubUser}/${project}:${imageTag}
+    """
+
+    bat 'type scanResults.txt'
+
+    def scanResults = readFile('scanResults.txt')
+
+    if (scanResults.contains("CRITICAL")) {
+        error "Critical vulnerabilities found in Docker image!"
+    } else {
+        echo "Docker image scan passed successfully."
+    }
 }
